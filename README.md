@@ -1,4 +1,17 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Eurobot 2020 User interface
+
+A React.js dashboard to interact with the whole system (vision, main robot (purple/green), secondary robot (red))
+
+In production context, this dashboard is meant to be serve by the vision raspberry pi (simple nginx server) because the vision raspberry pi will serve as an Wi-Fi access point for the whole system
+
+## Modules (or tabs)
+
+- Position
+    - See robots position in live
+- Camera
+    - See live camera and detect ArUco markers id and position
+- Calibration
+    - Generate OpenCV Calibration data for a specific camera
 
 ## Available Scripts
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Open cv debug</title>
+    </head>
+    <body>
+            <div>
+                <img src="" id="image" />
+            </div>
+
+
+        <script>
+
+                
+            const img = document.getElementById('image')
+
+
+            var ws = new WebSocket("ws://192.168.0.130:8082");
+
+            ws.onopen = () => {
+                console.log('Websocket opened')
+                
+                ws.send('live')
+            };
+
+
+            const photo = () => {
+                ws.send("photo");
+            }
+
+            ws.onmessage = (event) => {
+                let parsed = event.data.split("#")
+                if (parsed[0] === 'PIC') {
+                    image.src = parsed[1]
+                }
+            }
+                
+            ws.onclose = () => {
+                console.log('Websocket closed')
+            }
+        </script>
+    </body>
+</html>
