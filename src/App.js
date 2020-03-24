@@ -1,28 +1,12 @@
 import React from 'react';
 import {
   AppBar,
-  Container,
-  Typography,
-  Divider,
-  TextField,
-  Grid,
-  FormControl,
-  CardContent,
-  Card,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  FormLabel,
-  Checkbox,
-  FormGroup,
-  ButtonGroup,
-  Button,
   Tabs,
   Tab
 } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { indigo, red, purple } from '@material-ui/core/colors';
+//import { indigo, red, purple } from '@material-ui/core/colors';
 import PositionTab from './Tabs/PositionTab';
 import CameraTab from './Tabs/CameraTab';
 import CalibrationTab from './Tabs/CalibrationTab';
@@ -42,7 +26,7 @@ const App = class App  extends React.Component {
       }
     }
 
-    componentWillMount() {
+    componentDidMount() {
       this.webSocketService = new WebSocketService("192.168.0.15:8082")
       this.webSocketService.open()
     }
@@ -56,7 +40,8 @@ const App = class App  extends React.Component {
         <div className="App">
           <ThemeProvider theme={theme}>
             <AppBar position="static">
-              <Tabs 
+              <Tabs
+                centered
                 value={this.state.tab}
                 onChange={this.handleTabChange}>
                 <Tab label="Position" />

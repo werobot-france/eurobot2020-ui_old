@@ -39,7 +39,7 @@ const CameraTab = class Camera extends React.Component {
       return (
         <div>
           <div className="Camera" style={{display: 'flex', justifyContent: 'center', marginTop: '1em'}}>
-            <img src="" id="camera_frame" />
+            <img src="" id="camera_frame" alt="camera frame" />
           </div>
           <div className="CameraOptions" style={{display: 'flex', justifyContent: 'center'}}>
             

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
- Button
+ Button,
+ Typography
 } from '@material-ui/core'
 const PositionTab = class Camera extends React.Component {
 
@@ -14,7 +15,8 @@ const PositionTab = class Camera extends React.Component {
     render() {
       return (
         <div className="Camera">
-          Position
+          <Typography>Position</Typography>
+          <Button>WOW</Button>
         </div>
       );
     }
