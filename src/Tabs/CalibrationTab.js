@@ -35,10 +35,10 @@ const CalibrationTab = class Camera extends React.Component {
     beginCalibration = () => {
       this.setState({ status: 'gathering' }, () => {
         const image = document.getElementById('camera_frame_gathering')
-        this.ws.send('begin_calibration')
+        //this.ws.send('begin_calibration')
         this.ws.send('live')
         this.ws.addEventListener('frame', (e) => {
-          image.src = e.detail
+          image.src = e.detail[0]
         })
         this.ws.addEventListener('calibrationSnapshot', (e) => {
           let pictures = this.state.pictures

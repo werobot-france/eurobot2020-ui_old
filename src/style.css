@@ -66,3 +66,32 @@ body {
 .calibration-meta {
     margin-top: 1em;
 }
+
+.board-row.camera-debug {
+    align-items: flex-start !important;
+}
+
+.camera-debug-side-panel {
+    width: 30%;
+    padding-top: .75em;
+}
+
+.camera-meta {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 3em;
+    padding-top: .5em;
+}
+
+.camera-options {
+    display: flex;
+    padding-right: 3em;
+}
+
+.fps-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+}
