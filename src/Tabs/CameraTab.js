@@ -1,9 +1,15 @@
 import React from 'react';
 import {
- Checkbox,
- FormControlLabel,
- Typography
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  IconButton
 } from '@material-ui/core'
+
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
+
 import ReactJson from 'react-json-view'
 
 const CameraTab = class Camera extends React.Component {
@@ -15,7 +21,8 @@ const CameraTab = class Camera extends React.Component {
         markerPositions: false,
         cameraDebug: {},
         fps: 0,
-        tmpFps: 0
+        tmpFps: 0,
+        pause: false
       }
       this.ws = props.webSocketService
     }
@@ -24,8 +31,10 @@ const CameraTab = class Camera extends React.Component {
       const image = document.getElementById('camera_frame')
       this.ws.send('live')
       this.ws.addEventListener('frame', (e) => {
-        image.src = e.detail[0]
-        this.setState({cameraDebug: {corners: e.detail[1][0],ids: e.detail[1][1]}, tmpFps: this.state.tmpFps + 1})
+        if (!this.state.pause) {
+          image.src = e.detail[0]
+          this.setState({cameraDebug: {corners: e.detail[1][0],ids: e.detail[1][1]}, tmpFps: this.state.tmpFps + 1})
+        }
       })
       setInterval(() => {
         this.setState({tmpFps: 0, fps: this.state.tmpFps})
@@ -45,6 +54,10 @@ const CameraTab = class Camera extends React.Component {
       })
     }
 
+    togglePause = () => {
+      this.setState({pause: !this.state.pause})
+    }
+
     render() {
       return (
         <div>
@@ -56,10 +69,16 @@ const CameraTab = class Camera extends React.Component {
                 alt="camera frame"
                 id="camera_frame" />
               <div className="camera-meta">
-                <div class="fps-counter">
+                <div className="fps-counter">
                   <Typography>{this.state.fps} FPS</Typography>
                 </div>
                 <div className="camera-options">
+                  <div className="camera-options-button">
+                    <IconButton onClick={this.togglePause} color="primary">
+                       {!this.state.pause && <PauseCircleFilledIcon />}
+                       {this.state.pause && <PlayCircleFilledIcon />}
+                    </IconButton>
+                  </div>
                   <FormControlLabel
                     control={
                       <Checkbox 
@@ -81,7 +100,6 @@ const CameraTab = class Camera extends React.Component {
                 </div>
               </div>
             </div>
-
             <div className="side-panel camera-debug-side-panel">
               <div className="camera_debug">
                 <ReactJson 

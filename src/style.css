@@ -89,6 +89,10 @@ body {
     padding-right: 3em;
 }
 
+.camera-options-button {
+    margin-right: 1em;
+}
+
 .fps-counter {
     display: flex;
     justify-content: center;
