@@ -36,6 +36,9 @@ const CameraTab = class Camera extends React.Component {
           this.setState({cameraDebug: {corners: e.detail[1][0],ids: e.detail[1][1]}, tmpFps: this.state.tmpFps + 1})
         }
       })
+      this.ws.addEventListener('opened', () => {
+        this.ws.send('live')
+      })
       setInterval(() => {
         this.setState({tmpFps: 0, fps: this.state.tmpFps})
       }, 1000)
@@ -63,11 +66,13 @@ const CameraTab = class Camera extends React.Component {
         <div>
           <div className="board-row camera-debug">
             <div className="frame-container frame-container-with-meta">
-              <img 
-                className="frame-image"
-                src=""
-                alt="camera frame"
-                id="camera_frame" />
+              <div style={{width: '100%'}}>
+                <img 
+                  className="frame-image"
+                  src=""
+                  alt="camera frame"
+                  id="camera_frame" />
+              </div>
               <div className="camera-meta">
                 <div className="fps-counter">
                   <Typography>{this.state.fps} FPS</Typography>
