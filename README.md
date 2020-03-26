@@ -1,5 +1,7 @@
 # Eurobot 2020 User interface
 
+![Preview of the camera dashboard](./demo_camera_aruco_pos.png)
+
 A React.js dashboard to interact with the whole system (vision, main robot (purple/green), secondary robot (red))
 
 In production context, this dashboard is meant to be serve by the vision raspberry pi (simple nginx server) because the vision raspberry pi will serve as an Wi-Fi access point for the whole system
