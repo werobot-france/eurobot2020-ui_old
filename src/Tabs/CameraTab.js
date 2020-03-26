@@ -50,9 +50,10 @@ const CameraTab = class Camera extends React.Component {
         }
         let dist = event.detail[1].dist
         let position = event.detail[1].position
+        let attitude = event.detail[1].attitude
 
         this.setState({
-          cameraDebug: {corners: event.detail[1].formatedCorners, ids: event.detail[1].formatedIds, markers, position, dist}, 
+          cameraDebug: {corners: event.detail[1].formatedCorners, ids: event.detail[1].formatedIds, markers, position, dist, attitude}, 
           tmpFps: this.state.tmpFps + 1
         })
       }
