@@ -16,7 +16,9 @@ import {
  ListItemText
 } from '@material-ui/core'
 
+import LoadingButton from '../Helpers/LoadingButton'
 import DeleteIcon from '@material-ui/icons/Delete'
+import ReactJson from 'react-json-view'
 
 const CalibrationTab = class Camera extends React.Component {
 
@@ -27,7 +29,8 @@ const CalibrationTab = class Camera extends React.Component {
         pictures: [],
         savesDialog: false,
         expectedPictureCount: 0,
-        saves: []
+        saves: [],
+        processLoading: false
       }
       this.ws = props.webSocketService
     }
@@ -50,10 +53,15 @@ const CalibrationTab = class Camera extends React.Component {
     }
 
     takePic = () => {
-      this.ws.send('calibration_snapshot')
+      let calibrationId = ''
+      if (this.state.pictures.length > 0) {
+        calibrationId = this.state.pictures[0].calibrationId
+      }
+      this.ws.send('calibration_snapshot', {calibrationId})
     }
 
     process = () => {
+      this.setState({processLoading: true})
       this.ws.send('calibration_process', {calibrationId: this.state.pictures[0].calibrationId})
       this.ws.removeEventListener('calibrationOutput', this.onCalibrationOutput)
       this.ws.addEventListener('calibrationOutput', this.onCalibrationOutput)
@@ -61,7 +69,9 @@ const CalibrationTab = class Camera extends React.Component {
 
     onCalibrationOutput = event => {
       console.log('CALIB OUTPUT', event.detail)
-      this.setState({ calibrationOutput: event.detail })
+      this.setState({ calibrationOutput: event.detail }, () => {
+        this.setState({processLoading: false})
+      })
     }
 
     deleteFrame = args => {
@@ -89,6 +99,7 @@ const CalibrationTab = class Camera extends React.Component {
       console.log('received')
       let pictures = this.state.pictures
       pictures.push(event.detail.picture)
+      pictures = pictures.sort((a, b) => a.calibrationFrameId > b.calibrationFrameId ? 1 : -1)
       this.setState({pictures})
       if (this.state.pictures.length === this.state.expectedPictureCount) {
         console.log('finished')
@@ -141,10 +152,27 @@ const CalibrationTab = class Camera extends React.Component {
               }  
               {this.state.status === 'gathering' &&
                 <div>
-                  <div style={{marginTop: '1em', marginBottom: '1em'}}>
-                    <Button variant="contained" color="secondary" onClick={this.takePic} style={{marginRight: '1em'}}>Take pic</Button>
-                    <Button variant="contained" color="primary" onClick={this.openSavesDialog} style={{marginRight: '1em'}}>Load save</Button>
-                    <Button variant="contained" color="primary" onClick={this.process} disabled={this.state.pictures.length === 0}>Process</Button>
+                  <div style={{marginTop: '1em', marginBottom: '1em', display: 'flex'}}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={this.takePic}
+                      style={{marginRight: '1em'}}>
+                        Take pic
+                    </Button>
+                    <Button 
+                      variant="contained"
+                      color="primary"
+                      onClick={this.openSavesDialog}
+                      style={{marginRight: '1em'}}>
+                        Load save
+                    </Button>
+                    <LoadingButton 
+                      id="process-button"
+                      text="Process"
+                      onClick={this.process}
+                      disabled={this.state.pictures.length === 0}
+                      loading={this.state.processLoading} />
                   </div>
                   <div className="calibration-input-data-mosaic">
                     <GridList cellHeight={125}>
@@ -171,7 +199,16 @@ const CalibrationTab = class Camera extends React.Component {
               }
             </div>
           </div>
-            
+          <div className="calibration-output">
+            <ReactJson 
+              src={this.state.calibrationOutput}
+              enableClipboard={true}
+              displayObjectSize={false}
+              displayDataTypes={false}
+              sortKeys={true}
+              iconStyle={'triangle'}
+              />
+          </div>
             {/* {this.state.status === 'gathering' &&
               <div className="CalibrationGathering" style={{marginTop: '1em', marginBottom: '1em', display: 'flex', justifyContent: 'center'}}>
                 <div>
