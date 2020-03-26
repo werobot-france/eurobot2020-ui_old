@@ -27,7 +27,7 @@ const App = class App  extends React.Component {
     }
 
     componentDidMount() {
-      this.webSocketService = new WebSocketService("192.168.0.15:8082")
+      this.webSocketService = new WebSocketService("0.0.0.0:8082")
       this.webSocketService.open()
     }
 
