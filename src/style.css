@@ -99,3 +99,9 @@ body {
     align-items: center;
     color: red;
 }
+
+.loading-button-wrapper .loading-button-overlapping-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
