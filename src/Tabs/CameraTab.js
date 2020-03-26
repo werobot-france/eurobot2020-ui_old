@@ -28,20 +28,40 @@ const CameraTab = class Camera extends React.Component {
     }
     
     componentDidMount() {
-      const image = document.getElementById('camera_frame')
+      this.image = document.getElementById('camera_frame')
       this.ws.send('live')
-      this.ws.addEventListener('frame', (e) => {
-        if (!this.state.pause) {
-          image.src = e.detail[0]
-          this.setState({cameraDebug: {corners: e.detail[1][0],ids: e.detail[1][1]}, tmpFps: this.state.tmpFps + 1})
-        }
-      })
+      this.ws.addEventListener('frame', this.onNewFrame)
       this.ws.addEventListener('opened', () => {
         this.ws.send('live')
       })
-      setInterval(() => {
+      this.fpsIntervalId = window.setInterval(() => {
         this.setState({tmpFps: 0, fps: this.state.tmpFps})
       }, 1000)
+    }
+
+    onNewFrame = event => {
+      if (!this.state.pause) {
+        this.image.src = event.detail[0]
+        let markers = event.detail[1].markers
+        if (markers != null) {
+          markers = markers.map(marker => {
+            return {tvec: marker.tvec.map(coord =>  parseFloat(coord.toFixed(2))), rvec: marker.rvec.map(coord => parseFloat(coord.toFixed(2)))}
+          })
+        }
+        let dist = event.detail[1].dist
+        let position = event.detail[1].position
+
+        this.setState({
+          cameraDebug: {corners: event.detail[1].formatedCorners, ids: event.detail[1].formatedIds, markers, position, dist}, 
+          tmpFps: this.state.tmpFps + 1
+        })
+      }
+    }
+
+    componentWillUnmount() {
+      this.ws.removeEventListener('frame', this.onNewFrame)
+      this.ws.send('stop_live')
+      window.clearInterval(this.fpsIntervalId)
     }
 
     cameraOptionsChanged = (event) => {
@@ -53,6 +73,12 @@ const CameraTab = class Camera extends React.Component {
         }
         if (!this.state.detectMarkers) {
           this.ws.send('disable_markers')
+        }
+        if (this.state.markerPositions) {
+          this.ws.send('enable_position')
+        }
+        if (!this.state.markerPositions) {
+          this.ws.send('disable_position')
         }
       })
     }
