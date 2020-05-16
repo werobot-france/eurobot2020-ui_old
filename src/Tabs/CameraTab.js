@@ -19,10 +19,12 @@ const CameraTab = class Camera extends React.Component {
       this.state = {
         detectMarkers: false,
         markerPositions: false,
+        latchPosition: false,
         cameraDebug: {},
         fps: 0,
         tmpFps: 0,
-        pause: false
+        pause: false,
+        latchedPosition: {}
       }
       this.ws = props.webSocketService
     }
@@ -51,9 +53,29 @@ const CameraTab = class Camera extends React.Component {
         let dist = event.detail[1].dist
         let position = event.detail[1].position
         let attitude = event.detail[1].attitude
-
+        let debug = event.detail[1].debug
+        if (position == null || dist == null || attitude == null) {
+          dist = this.state.latchedPosition.dist
+          attitude = this.state.latchedPosition.attitude
+          position = this.state.latchedPosition.position
+          debug = this.state.latchedPosition.debug
+        }
         this.setState({
-          cameraDebug: {corners: event.detail[1].formatedCorners, ids: event.detail[1].formatedIds, markers, position, dist, attitude}, 
+          cameraDebug: {
+            corners: event.detail[1].formatedCorners,
+            ids: event.detail[1].formatedIds,
+            markers,
+            position,
+            dist,
+            attitude,
+            debug
+          },
+          latchedPosition: {
+            dist,
+            attitude,
+            position,
+            debug
+          },
           tmpFps: this.state.tmpFps + 1
         })
       }
@@ -128,6 +150,15 @@ const CameraTab = class Camera extends React.Component {
                           name="markerPositions" />
                     }
                     label="Markers position"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                          checked={this.state.latchPosition}
+                          onChange={this.cameraOptionsChanged}
+                          name="latchPosition" />
+                    }
+                    label="Latch position"
                   />
                 </div>
               </div>
